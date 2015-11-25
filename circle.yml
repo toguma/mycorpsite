@@ -10,7 +10,7 @@ dependencies:
 
 test:
   override:
-    - echo "All the tests are passed!!"
+    - echo "Nothing to do here"
 
 deployment:
   production: # just a label; label names are completely up to you
