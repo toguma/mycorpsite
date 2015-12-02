@@ -7,6 +7,7 @@ dependencies:
         - sudo pip install awscli
     post:
         - aws configure set region ap-northeast-1
+
 test:
   override:
     - echo "Nothing to do here"
@@ -15,8 +16,14 @@ deployment:
   production: # just a label; label names are completely up to you
     branch: master
     commands:
+      - sed -i -e "s/REPLACE-DATA-BACKET/s3site-form-data/g" html/js/form.js
       - aws s3 sync html/ s3://s3site.proudit.jp/ --delete
+      - cd lambda/ && zip -r lambda.zip ./*
+      - aws lambda update-function-code --function-name s3site-form --zip-file fileb://./lambda/lambda.zip --publish
   staging:
     branch: staging
     commands:
+      - sed -i -e "s/REPLACE-DATA-BACKET/st-s3site-form-data/g" html/js/form.js
       - aws s3 sync html/ s3://st.s3site.proudit.jp/ --delete
+      - cd lambda/ && zip -r lambda.zip ./*
+      - aws lambda update-function-code --function-name st-s3site-form --zip-file fileb://./lambda/lambda.zip --publish
